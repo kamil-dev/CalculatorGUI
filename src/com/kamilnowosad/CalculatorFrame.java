@@ -1,11 +1,12 @@
 package com.kamilnowosad;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 
 public class CalculatorFrame extends JFrame {
     private final int WIDTH = 320;
-    private final int HEIGHT = 400;
+    private final int HEIGHT = 480;
 
     private JTextField textFieldBottom, textFieldTop;
     private JButton[] controlButtons = new JButton[20];
@@ -18,7 +19,6 @@ public class CalculatorFrame extends JFrame {
         setAlwaysOnTop(true);
         createPanelTop();
         createPanelBottom();
-        setBackground(Color.BLACK );
 
         setTitle("CalculatorListener");
         setResizable(false);
@@ -26,20 +26,31 @@ public class CalculatorFrame extends JFrame {
 
     public void createPanelTop(){
         JPanel panelTop = new JPanel();
-        panelTop.setBounds(2,2,WIDTH-4,HEIGHT/5 -20);
-        panelTop.setLayout(null);
+        panelTop.setBounds(5,10,WIDTH-22,HEIGHT/6 +15);
+        panelTop.setLayout(new BorderLayout());
+
+        textFieldTop = new JTextField();
+        textFieldTop.setText("12+23-45");
+        textFieldTop.setEditable(false);
+        textFieldTop.setFont(new Font("Arial",Font.PLAIN,25));
+        textFieldTop.setHorizontalAlignment(SwingConstants.RIGHT);
+        textFieldTop.setEditable(false);
 
         textFieldBottom = new JTextField();
-        textFieldBottom.setHorizontalAlignment(JTextField.LEFT);
-        textFieldBottom.setBounds(0,0,WIDTH-8,HEIGHT/5);
+        textFieldBottom.setEditable(false);
+        textFieldBottom.setText("67");
+        textFieldBottom.setBackground(Color.WHITE);
+        textFieldBottom.setFont(new Font("Arial",Font.PLAIN,40));
+        textFieldBottom.setHorizontalAlignment(SwingConstants.RIGHT);
 
-        panelTop.add(textFieldBottom);
+        panelTop.add(textFieldTop,BorderLayout.PAGE_START);
+        panelTop.add(textFieldBottom, BorderLayout.PAGE_END);
         add(panelTop);
     }
 
     public void createPanelBottom(){
         JPanel panelBottom = new JPanel();
-        panelBottom.setBounds(2,2+HEIGHT/5 -20,WIDTH-18,4*HEIGHT/5 - 24);
+        panelBottom.setBounds(5,5+HEIGHT/6 +30,WIDTH-22,4*HEIGHT/6);
         panelBottom.setLayout(new GridLayout(5,4));
         JButton b;
 
