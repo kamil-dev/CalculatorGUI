@@ -30,18 +30,18 @@ public class CalculatorFrame extends JFrame {
         panelTop.setLayout(new BorderLayout());
 
         textFieldTop = new JTextField();
-        textFieldTop.setText("12+23-45");
         textFieldTop.setEditable(false);
         textFieldTop.setFont(new Font("Arial",Font.PLAIN,25));
         textFieldTop.setHorizontalAlignment(SwingConstants.RIGHT);
         textFieldTop.setEditable(false);
+        textFieldTop.setText("25.2*(-3-1)+9.0-(-11.1+4)/7");
 
         textFieldBottom = new JTextField();
         textFieldBottom.setEditable(false);
-        textFieldBottom.setText("67");
         textFieldBottom.setBackground(Color.WHITE);
         textFieldBottom.setFont(new Font("Arial",Font.PLAIN,40));
         textFieldBottom.setHorizontalAlignment(SwingConstants.RIGHT);
+        textFieldBottom.setText("0");
 
         panelTop.add(textFieldTop,BorderLayout.PAGE_START);
         panelTop.add(textFieldBottom, BorderLayout.PAGE_END);
