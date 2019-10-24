@@ -1,7 +1,6 @@
 package com.kamilnowosad;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 
 public class CalculatorFrame extends JFrame {
@@ -34,7 +33,7 @@ public class CalculatorFrame extends JFrame {
         textFieldTop.setFont(new Font("Arial",Font.PLAIN,25));
         textFieldTop.setHorizontalAlignment(SwingConstants.RIGHT);
         textFieldTop.setEditable(false);
-        textFieldTop.setText("25.2*(-3-1)+9.0-(-11.1+4)/7");
+        textFieldTop.setText("");
 
         textFieldBottom = new JTextField();
         textFieldBottom.setEditable(false);

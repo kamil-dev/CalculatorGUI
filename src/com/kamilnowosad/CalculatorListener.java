@@ -3,11 +3,7 @@ package com.kamilnowosad;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Stack;
 
 public class CalculatorListener implements ActionListener {
 
@@ -29,13 +25,12 @@ public class CalculatorListener implements ActionListener {
         char lastBottomChar = bottomText.charAt(bottomText.length()-1);
 
         if (buttonText.equals("=")){
-
             if (calculateNumOfOpenParentheses(topText) == 0) {
                 if (lastTopChar == '+' || lastTopChar == '-' || lastTopChar == '*' || lastTopChar == '/'){
                     textFieldTop.setText(topText + bottomText);
                 }
-//                double result = Math.round(executeCalculations(textFieldTop.getText())*100)/100;
-//                textFieldBottom.setText(String.valueOf(result));
+                double result = calculate(textFieldTop.getText(),0).value;
+                textFieldBottom.setText(String.valueOf(result));
             }
         } else if (buttonText.equals("C")){
             textFieldTop.setText("");
@@ -64,7 +59,14 @@ public class CalculatorListener implements ActionListener {
             }
 
         } else if (buttonText.equals("-")){
-            if (topText.isEmpty() || (lastTopChar >= '0' && lastTopChar <= '9') || lastTopChar == ')' || lastTopChar == '(' ){
+            if (lastTopChar == '(' && bottomText.equals("0")){
+                textFieldTop.setText(topText + buttonText);
+            }
+            else if (lastBottomChar != '.' && lastTopChar != ')' && !(bottomText.equals("0") && topText.isEmpty()) ){
+                textFieldTop.setText(topText + bottomText + buttonText);
+                textFieldBottom.setText("0");
+            }
+            else if (topText.isEmpty() || lastTopChar == ')' || lastTopChar == '(' ){
                 textFieldTop.setText(topText + buttonText);
             }
 
@@ -89,21 +91,63 @@ public class CalculatorListener implements ActionListener {
         return numOfOpeningParenthesis-numOfClosingParenthesis;
     }
 
+    private static ValueAndIndex calculate(String txt, int indexStart){
+        Stack<Double> s = new Stack<>();
+        double number;
+        StringBuilder numInBuild = new StringBuilder();
+        char c;
+        char operand =' ';
+        int indexEnd = txt.length() - 1;
 
+        for (int i = indexStart; i < txt.length() ; i++) {
+            c = txt.charAt(i);
+            if (c == '-' || c == '+' || c == '*' || c == '/' ){
+                if (numInBuild.length() != 0 ) {
+                    number = Double.parseDouble(numInBuild.toString());
+                    numInBuild.setLength(0);
+                    if (operand == '*' || operand == '/'){
+                        number = (operand == '*') ? s.pop()*number : s.pop()/number;
+                        s.push(number);
+                    } else s.push(number);
+                }
+                operand = c;
+                if (c == '-'){
+                    numInBuild.append(c);
+                }
 
-//    private static double executeCalculations(String expression){
-//        List<Double> values = new ArrayList<>();
-//        List<Character> operands = new ArrayList<>();
-//
-//        String doubleNumGroupPattern = "(-?\\d+\\.?\\d*)";
-//        Pattern compiledGroupPattern = Pattern.compile(doubleNumGroupPattern);
-//        Matcher groupMatcher = compiledGroupPattern.matcher(expression);
-//        while(groupMatcher.find()){
-//            values.add(Double.parseDouble(groupMatcher.group(1)));
-//        }
-//        System.out.println(Arrays.toString(values.toArray()));
-//
-//        return 0;
-//    }
+            } else if ((c >= '0' && c <= '9') || c == '.' ) {
+                numInBuild.append(c);
+            } else if (c == '(') {
+                ValueAndIndex p = calculate(txt, i+1);
+                i = p.indexEnd;
+                if (numInBuild.toString().equals("-")){
+                    number = -p.value;
+                    numInBuild.setLength(0);
+                } else number = p.value;
+                if (operand == '*' || operand == '/'){
+                    number = (operand == '*') ? s.pop()*number : s.pop()/number;
+                    s.push(number);
+                } else s.push(number);
+            } else if (c == ')'){
+                indexEnd = i;
+                i = txt.length() - 1;
+            }
+        }
+        if (numInBuild.length() != 0 ) {
+            number = Double.parseDouble(numInBuild.toString());
+            numInBuild.setLength(0);
+            if (operand == '*' || operand == '/'){
+                number = (operand == '*') ? s.pop()*number : s.pop()/number;
+                s.push(number);
+            } else s.push(number);
+        }
+        number = 0;
+        for (Double d : s){
+            System.out.println(d);
+            number+=d;
+        }
+        System.out.println(number);
+        return new ValueAndIndex(number,indexEnd);
+    }
 
 }
