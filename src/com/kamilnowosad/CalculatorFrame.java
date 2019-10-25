@@ -18,7 +18,6 @@ public class CalculatorFrame extends JFrame {
         setAlwaysOnTop(true);
         createPanelTop();
         createPanelBottom();
-
         setTitle("CalculatorListener");
         setResizable(false);
     }

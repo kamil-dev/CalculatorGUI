@@ -29,8 +29,15 @@ public class CalculatorListener implements ActionListener {
                 if (lastTopChar == '+' || lastTopChar == '-' || lastTopChar == '*' || lastTopChar == '/'){
                     textFieldTop.setText(topText + bottomText);
                 }
+                try {
                 double result = calculate(textFieldTop.getText(),0).value;
                 textFieldBottom.setText(String.valueOf(result));
+                } catch (ArithmeticException exception){
+                    System.out.println("You can not divide by 0");
+                    textFieldTop.setText("");
+                    textFieldBottom.setText("0");
+                }
+
             }
         } else if (buttonText.equals("C")){
             textFieldTop.setText("");
@@ -91,7 +98,7 @@ public class CalculatorListener implements ActionListener {
         return numOfOpeningParenthesis-numOfClosingParenthesis;
     }
 
-    private static ValueAndIndex calculate(String txt, int indexStart){
+    private static ValueAndIndex calculate(String txt, int indexStart) {
         Stack<Double> s = new Stack<>();
         double number;
         StringBuilder numInBuild = new StringBuilder();
@@ -106,8 +113,8 @@ public class CalculatorListener implements ActionListener {
                     number = Double.parseDouble(numInBuild.toString());
                     numInBuild.setLength(0);
                     if (operand == '*' || operand == '/'){
-                        number = (operand == '*') ? s.pop()*number : s.pop()/number;
-                        s.push(number);
+                            number = (operand == '*') ? s.pop() * number : s.pop() / number;
+                            s.push(number);
                     } else s.push(number);
                 }
                 operand = c;
@@ -125,9 +132,15 @@ public class CalculatorListener implements ActionListener {
                     numInBuild.setLength(0);
                 } else number = p.value;
                 if (operand == '*' || operand == '/'){
-                    number = (operand == '*') ? s.pop()*number : s.pop()/number;
-                    s.push(number);
-                } else s.push(number);
+
+                    if (operand == '*'){
+                        number = s.pop()*number;
+                    } else {
+                        if (number == 0) throw new ArithmeticException("Can not divide by 0");
+                        number = s.pop()/number;
+                    }
+                }
+                s.push(number);
             } else if (c == ')'){
                 indexEnd = i;
                 i = txt.length() - 1;
@@ -137,16 +150,20 @@ public class CalculatorListener implements ActionListener {
             number = Double.parseDouble(numInBuild.toString());
             numInBuild.setLength(0);
             if (operand == '*' || operand == '/'){
-                number = (operand == '*') ? s.pop()*number : s.pop()/number;
-                s.push(number);
-            } else s.push(number);
+                if (operand == '*'){
+                    number = s.pop()*number;
+                } else {
+                    if (number == 0) throw new ArithmeticException("Can not divide by 0");
+                    number = s.pop()/number;
+                }
+            }
+            s.push(number);
         }
         number = 0;
         for (Double d : s){
             System.out.println(d);
             number+=d;
         }
-        System.out.println(number);
         return new ValueAndIndex(number,indexEnd);
     }
 
