@@ -1,4 +1,4 @@
-package com.kamilnowosad;
+package com.kamilnowosad.model;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -30,7 +30,7 @@ public class CalculatorListener implements ActionListener {
                     textFieldTop.setText(topText + bottomText);
                 }
                 try {
-                double result = calculate(textFieldTop.getText(),0).value;
+                double result = calculate(textFieldTop.getText(),0).getValue();
                 textFieldBottom.setText(String.valueOf(result));
                 } catch (ArithmeticException exception){
                     System.out.println("You can not divide by 0");
@@ -98,7 +98,7 @@ public class CalculatorListener implements ActionListener {
         return numOfOpeningParenthesis-numOfClosingParenthesis;
     }
 
-    private static ValueAndIndex calculate(String txt, int indexStart) {
+    public static ValueAndIndex calculate(String txt, int indexStart) {
         Stack<Double> s = new Stack<>();
         double number;
         StringBuilder numInBuild = new StringBuilder();
@@ -113,9 +113,14 @@ public class CalculatorListener implements ActionListener {
                     number = Double.parseDouble(numInBuild.toString());
                     numInBuild.setLength(0);
                     if (operand == '*' || operand == '/'){
-                            number = (operand == '*') ? s.pop() * number : s.pop() / number;
-                            s.push(number);
-                    } else s.push(number);
+                        if (operand == '*'){
+                            number = s.pop()*number;
+                        } else {
+                            if (number == 0) throw new ArithmeticException("Can not divide by 0");
+                            number = s.pop()/number;
+                        }
+                    }
+                    s.push(number);
                 }
                 operand = c;
                 if (c == '-'){
@@ -161,7 +166,6 @@ public class CalculatorListener implements ActionListener {
         }
         number = 0;
         for (Double d : s){
-            System.out.println(d);
             number+=d;
         }
         return new ValueAndIndex(number,indexEnd);

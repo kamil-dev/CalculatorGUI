@@ -1,4 +1,4 @@
-package com.kamilnowosad;
+package com.kamilnowosad.model;
 
 import javax.swing.*;
 import java.awt.*;
